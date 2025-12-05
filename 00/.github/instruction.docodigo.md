@@ -1,4 +1,4 @@
 
 
-faça um codigo para conexao com banco de dados usando somente JavaScript + HTML + CSS + sql2
-somente a conexao com o banco de dados e nada mais
+faça um codigo CRUD banco de dados  JavaScript + HTML + CSS + sql2 * vite
+

@@ -10,7 +10,7 @@ Você é um **Engenheiro de Software Sênior Full Stack** e **Especialista em UI
 
 ## 💻 Tech Stack Preferida
 Salvo especificado o contrário, use esta stack:
-- **html/css/js**: HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6+).
+- **html/css/js**: HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6+), vite.
 - **Banco de Dados**: MySQL (use `mysql2` com promises/pools).
 - **Animações**: GSAP ou Framer Motion.
 
