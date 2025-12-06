@@ -13,15 +13,27 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0
 });
+async function testConnection() {
+    try {
+        const connection = await pool.getConnection();
+        console.log('Conexão com o banco de dados estabelecida com sucesso!');
+        connection.release();
+        return { success: true, message: 'Conexão com o banco de dados estabelecida com sucesso!' };
+    } catch (error) {
+        console.error('Erro ao conectar com o banco de dados:', error.message);
+        
+        let userMessage = 'Erro ao conectar com o banco de dados. Verifique as configurações e tente novamente.';
 
-// Testa a conexão ao iniciar
-pool.getConnection()
-    .then(connection => {
-        console.log('✅ Conexão com o banco de dados MySQL bem-sucedida!');
-        connection.release(); // Libera a conexão de volta para o pool
-    })
-    .catch(err => {
-        console.error('❌ Erro ao conectar com o banco de dados:', err.message);
-    });
+        if (error.code === 'ECONNREFUSED') {
+            userMessage = 'Não foi possível conectar ao banco de dados. Verifique se o servidor de banco de dados está em execução e acessível.';
+        } else if (error.code === 'ER_ACCESS_DENIED_ERROR') {
+            userMessage = 'Acesso negado ao banco de dados. Verifique o nome de usuário e a senha.';
+        } else if (error.code === 'ER_BAD_DB_ERROR') {
+            userMessage = `O banco de dados '${process.env.DB_NAME}' não foi encontrado. Verifique se o nome do banco de dados está correto.`;
+        }
 
-module.exports = pool;
+        return { success: false, message: userMessage, error: error.message };
+    }
+}
+
+module.exports = { pool, testConnection };
