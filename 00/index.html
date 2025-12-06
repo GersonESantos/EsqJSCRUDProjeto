@@ -1,77 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuários</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro De Usuários Premium</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h1>Cadastro De Usuários</h1>
-      </header>
-
-      <div class="glass-card" id="form-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="margin: 0; font-size: 1.5rem; color: var(--accent-color);">Formulário</h2>
-            <button type="button" id="btnNewUser" class="btn btn-edit" style="background: rgba(255,255,255,0.1); color: white;">
-                + Novo Usuário
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-gradient"></div>
+    <main class="container">
+        <header class="glass-header">
+            <h1>Cadastro de Usuários</h1>
+            <button id="btn-add-user" class="btn btn-primary">
+                <span class="icon">✨</span> Novo Usuário
             </button>
-        </div>
-        <form id="userForm">
-          <input type="hidden" id="userId" />
-          <div class="grid-2">
-            <div class="form-group">
-              <label for="nome">Nome Completo</label>
-              <input type="text" id="nome" name="nome" placeholder="Ex: João Silva" required />
-            </div>
-            <div class="form-group">
-              <label for="email">E-mail</label>
-              <input type="email" id="email" name="email" placeholder="Ex: joao@email.com" required />
-            </div>
-          </div>
-          <div class="grid-2">
-            <div class="form-group">
-              <label for="fone">Telefone</label>
-              <input type="tel" id="fone" name="fone" placeholder="Ex: (11) 99999-9999" required />
-            </div>
-            <div class="form-group">
-              <label for="data_nascimento">Data de Nascimento</label>
-              <input type="date" id="data_nascimento" name="data_nascimento" required />
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary">
-            <span>Salvar Usuário</span>
-          </button>
-        </form>
-      </div>
+        </header>
+        <section id="users-container" class="glass-panel">
+            <!-- Usuários serão inseridos aqui pelo JavaScript -->
+        </section>
+    </main>
 
-      <div class="glass-card">
-        <div class="table-container">
-          <table id="usersTable">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Telefone</th>
-                <th>Nascimento</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="usersList">
-              <!-- Users will be populated here -->
-              <tr>
-                <td colspan="5" class="loading">Carregando usuários...</td>
-              </tr>
-            </tbody>
-          </table>
+    <!-- Modal para Adicionar/Editar Usuário -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div id="user-modal" class="glass-modal">
+            <h2 id="modal-title">Novo Usuário</h2>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" autocomplete="new-password">
+                    <small>Deixe em branco para não alterar a senha ao editar.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="btn-cancel" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
         </div>
-      </div>
     </div>
+
+    <!-- Notificação Toast -->
+    <div id="toast" class="toast"></div>
+
     <script type="module" src="/main.js"></script>
-  </body>
+</body>
 </html>

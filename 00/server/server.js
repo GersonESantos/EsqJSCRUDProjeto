@@ -1,83 +1,101 @@
+require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+const PORT = process.env.API_PORT || 3001;
 
-// Test Route
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', message: 'Server is running' });
-});
+// --- Middlewares ---
+app.use(cors()); // Habilita CORS para todas as rotas
+app.use(express.json()); // Permite que o servidor entenda JSON
 
-// GET All Users
-app.get('/api/usuarios', async (req, res) => {
+// --- Rotas da API ---
+
+// GET: Listar todos os usuários
+app.get('/api/users', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM usuarios ORDER BY id DESC');
+        const [rows] = await db.query('SELECT id, nome, email, data_criacao FROM usuarios ORDER BY data_criacao DESC');
         res.json(rows);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar usuários' });
+        console.error('Erro ao buscar usuários:', error);
+        res.status(500).json({ error: 'Erro interno do servidor ao buscar usuários.' });
     }
 });
 
-// GET One User
-app.get('/api/usuarios/:id', async (req, res) => {
+// POST: Criar um novo usuário
+app.post('/api/users', async (req, res) => {
+    const { nome, email, senha } = req.body;
+    if (!nome || !email || !senha) {
+        return res.status(400).json({ error: 'Nome, email e senha são obrigatórios.' });
+    }
     try {
-        const [rows] = await db.query('SELECT * FROM usuarios WHERE id = ?', [req.params.id]);
-        if (rows.length === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
-        res.json(rows[0]);
+        // Idealmente, a senha seria criptografada aqui antes de salvar.
+        // Ex: const hash = await bcrypt.hash(senha, 10);
+        const [result] = await db.query('INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)', [nome, email, senha]);
+        res.status(201).json({ id: result.insertId, nome, email });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar usuário' });
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ error: 'Este email já está cadastrado.' });
+        }
+        console.error('Erro ao criar usuário:', error);
+        res.status(500).json({ error: 'Erro interno do servidor ao criar usuário.' });
     }
 });
 
-// CREATE User
-app.post('/api/usuarios', async (req, res) => {
-    const { nome, email, fone, data_nascimento } = req.body;
+// PUT: Atualizar um usuário existente
+app.put('/api/users/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nome, email, senha } = req.body;
+
+    if (!nome || !email) {
+        return res.status(400).json({ error: 'Nome e email são obrigatórios.' });
+    }
+
+    let query = 'UPDATE usuarios SET nome = ?, email = ?';
+    const params = [nome, email];
+
+    if (senha) {
+        // Se uma nova senha foi fornecida, atualiza também.
+        query += ', senha = ?';
+        params.push(senha);
+    }
+
+    query += ' WHERE id = ?';
+    params.push(id);
+
     try {
-        const [result] = await db.query(
-            'INSERT INTO usuarios (nome, email, telefone, data_nasc) VALUES (?, ?, ?, ?)',
-            [nome, email, fone, data_nascimento]
-        );
-        res.status(201).json({ id: result.insertId, message: 'Usuário criado com sucesso' });
+        const [result] = await db.query(query, params);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+        res.json({ message: 'Usuário atualizado com sucesso.' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao criar usuário', details: error.message });
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ error: 'Este email já pertence a outro usuário.' });
+        }
+        console.error('Erro ao atualizar usuário:', error);
+        res.status(500).json({ error: 'Erro interno do servidor ao atualizar usuário.' });
     }
 });
 
-// UPDATE User
-app.put('/api/usuarios/:id', async (req, res) => {
-    const { nome, email, fone, data_nascimento } = req.body;
+// DELETE: Excluir um usuário
+app.delete('/api/users/:id', async (req, res) => {
+    const { id } = req.params;
     try {
-        const [result] = await db.query(
-            'UPDATE usuarios SET nome = ?, email = ?, telefone = ?, data_nasc = ? WHERE id = ?',
-            [nome, email, fone, data_nascimento, req.params.id]
-        );
-        if (result.affectedRows === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
-        res.json({ message: 'Usuário atualizado com sucesso' });
+        const [result] = await db.query('DELETE FROM usuarios WHERE id = ?', [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+        res.status(204).send(); // 204 No Content - sucesso sem corpo de resposta
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao atualizar usuário' });
+        console.error('Erro ao deletar usuário:', error);
+        res.status(500).json({ error: 'Erro interno do servidor ao deletar usuário.' });
     }
 });
 
-// DELETE User
-app.delete('/api/usuarios/:id', async (req, res) => {
-    try {
-        const [result] = await db.query('DELETE FROM usuarios WHERE id = ?', [req.params.id]);
-        if (result.affectedRows === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
-        res.json({ message: 'Usuário deletado com sucesso' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao deletar usuário' });
-    }
-});
 
-const PORT = 3000;
+// --- Inicialização do Servidor ---
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Servidor da API rodando em http://localhost:${PORT}`);
 });
