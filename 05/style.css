@@ -1,0 +1,268 @@
+/* 1. Definição das Variáveis de Ambiente (Root) */
+:root {
+    --font-family: 'Inter', sans-serif;
+    --background-start: #1a2a6c;
+    --background-end: #b21f1f;
+    --background-end-2: #fdbb2d;
+    
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.1);
+
+    --text-primary: #f0f4f8;
+    --text-secondary: #aab8c5;
+    --text-muted: #788aa3;
+
+    --primary-color: #8e44ad;
+    --primary-color-hover: #9b59b6;
+    --secondary-color: #34495e;
+    --secondary-color-hover: #4a627a;
+    --delete-color: #c0392b;
+    --delete-color-hover: #e74c3c;
+    --success-color: #27ae60;
+    --error-color: #c0392b;
+
+    --border-radius: 12px;
+    --shadow: 0 8px 32px 0 var(--glass-shadow);
+    --backdrop-filter: blur(10px);
+    --transition-speed: 0.3s;
+}
+
+/* 2. Reset e Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    color: var(--text-primary);
+    background-color: #0c101f;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+.background-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--background-start), var(--background-end), var(--background-end-2));
+    animation: gradient-animation 20s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* 3. Estilos de Componentes (Glassmorphism) */
+.glass-header, .glass-panel, .glass-modal {
+    background: var(--glass-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    backdrop-filter: var(--backdrop-filter);
+    -webkit-backdrop-filter: var(--backdrop-filter);
+}
+
+.glass-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.glass-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.glass-panel {
+    padding: 1.5rem;
+    min-height: 300px;
+}
+
+/* 4. Botões e Formulários */
+.btn {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: var(--secondary-color-hover);
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color var(--transition-speed) ease;
+}
+.icon-btn:hover {
+    background-color: rgba(255,255,255,0.15);
+}
+.icon-btn.delete:hover {
+    color: var(--delete-color);
+}
+
+/* 5. Lista de Usuários */
+.user-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--glass-border);
+    transition: background-color var(--transition-speed) ease;
+}
+.user-row:last-child {
+    border-bottom: none;
+}
+.user-row:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+.user-info .name {
+    font-weight: 500;
+}
+.user-info .email {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+.user-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* 6. Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease;
+}
+.modal-overlay:not(.hidden) {
+    opacity: 1;
+}
+.hidden {
+    display: none;
+}
+
+.glass-modal {
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+}
+
+#modal-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+.form-group small {
+    font-size: 0.8em;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* 7. Toast */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    color: white;
+    background-color: var(--success-color);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
+    z-index: 2000;
+}
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -20px);
+}
+.toast.error {
+    background-color: var(--error-color);
+}
