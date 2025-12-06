@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status da Conexão - MySQL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="glass-container">
+        <header>
+            <h1>Database Connection</h1>
+            <p class="subtitle">MySQL Status Monitor</p>
+        </header>
+
+        <div class="status-card" id="statusCard">
+            <div class="loader" id="loader"></div>
+            <div class="status-icon hidden" id="statusIcon"></div>
+            <h2 id="statusTitle">Verificando...</h2>
+            <p id="statusMessage">Tentando estabelecer conexão com o banco de dados.</p>
+        </div>
+
+        <footer>
+            <button id="retryBtn" class="glass-btn">Testar Novamente</button>
+        </footer>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
