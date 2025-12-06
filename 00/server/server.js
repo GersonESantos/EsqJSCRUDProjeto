@@ -14,23 +14,23 @@ app.get('/api/health', (req, res) => {
 // GET All Users
 app.get('/api/usuarios', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM usuarios ORDER BY id DESC');
+        const [rows] = await db.query('SELECT * FROM clientes_app ORDER BY id DESC');
         res.json(rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar usuários' });
+        res.status(500).json({ error: 'Erro ao buscar clientes' });
     }
 });
 
 // GET One User
 app.get('/api/usuarios/:id', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM usuarios WHERE id = ?', [req.params.id]);
-        if (rows.length === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
+        const [rows] = await db.query('SELECT * FROM clientes_app WHERE id = ?', [req.params.id]);
+        if (rows.length === 0) return res.status(404).json({ error: 'Cliente não encontrado' });
         res.json(rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar usuário' });
+        res.status(500).json({ error: 'Erro ao buscar cliente' });
     }
 });
 
@@ -39,13 +39,13 @@ app.post('/api/usuarios', async (req, res) => {
     const { nome, email, fone, data_nascimento } = req.body;
     try {
         const [result] = await db.query(
-            'INSERT INTO usuarios (nome, email, telefone, data_nasc) VALUES (?, ?, ?, ?)',
+            'INSERT INTO clientes_app (nome, email, telefone, data_nasc) VALUES (?, ?, ?, ?)',
             [nome, email, fone, data_nascimento]
         );
-        res.status(201).json({ id: result.insertId, message: 'Usuário criado com sucesso' });
+        res.status(201).json({ id: result.insertId, message: 'Cliente criado com sucesso' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao criar usuário', details: error.message });
+        res.status(500).json({ error: 'Erro ao criar cliente', details: error.message });
     }
 });
 
@@ -54,11 +54,11 @@ app.put('/api/usuarios/:id', async (req, res) => {
     const { nome, email, fone, data_nascimento } = req.body;
     try {
         const [result] = await db.query(
-            'UPDATE usuarios SET nome = ?, email = ?, telefone = ?, data_nasc = ? WHERE id = ?',
+            'UPDATE clientes_app SET nome = ?, email = ?, telefone = ?, data_nasc = ? WHERE id = ?',
             [nome, email, fone, data_nascimento, req.params.id]
         );
-        if (result.affectedRows === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
-        res.json({ message: 'Usuário atualizado com sucesso' });
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'Cliente não encontrado' });
+        res.json({ message: 'Cliente atualizado com sucesso' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao atualizar usuário' });
@@ -68,12 +68,12 @@ app.put('/api/usuarios/:id', async (req, res) => {
 // DELETE User
 app.delete('/api/usuarios/:id', async (req, res) => {
     try {
-        const [result] = await db.query('DELETE FROM usuarios WHERE id = ?', [req.params.id]);
-        if (result.affectedRows === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
-        res.json({ message: 'Usuário deletado com sucesso' });
+        const [result] = await db.query('DELETE FROM clientes_app WHERE id = ?', [req.params.id]);
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'Cliente não encontrado' });
+        res.json({ message: 'Cliente deletado com sucesso' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao deletar usuário' });
+        res.status(500).json({ error: 'Erro ao deletar cliente' });
     }
 });
 
