@@ -17,7 +17,7 @@ app.get('/api/health', async (req, res) => {
         // Libera a conexão imediatamente
         connection.release();
         // Se conseguiu, responde com status 200 (OK)
-        res.status(200).json({ status: 'ok', message: 'API and DB are running' });
+        res.status(200).json({ status: 'ok', message: 'API and DB estao rodando' });
     } catch (error) {
         // Se falhou, responde com status 503 (Serviço Indisponível)
         console.error('Health check failed:', error);
