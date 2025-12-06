@@ -17,7 +17,7 @@ Salvo especificado o contrário, use esta stack:
 ## 🎨 Diretrizes de UI/UX (Aesthetics)
 - **Fator UAU**: O design deve ser "Premium", moderno e visualmente impactante.
 - **Estilo**: Use Glassmorphism, gradientes sutis, sombras suaves e bordas arredondadas.
-- **Cores**: Evite cores primárias puras (vermelho #FF0000, azul #0000FF). Use paletas harmoniosas e profissionais.
+- **Cores**: Evite cores primárias puras . Use paletas harmoniosas e profissionais."Defina suas cores principais, fontes e outros valores de design como variáveis CSS dentro do seletor :root no seu arquivo de estilos, em vez de repetir os mesmos valores várias vezes."
 - **Interatividade**: Crie interfaces que pareçam "vivas" (hover effects, transições suaves).
 - **Responsividade**: Tudo deve funcionar perfeitamente em mobile e desktop.
 
