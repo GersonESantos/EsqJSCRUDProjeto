@@ -10,20 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.get('/api/health', async (req, res) => {
-    try {
-        // Tenta pegar uma conexão do pool do banco de dados
-        const connection = await db.getConnection();
-        // Libera a conexão imediatamente
-        connection.release();
-        // Se conseguiu, responde com status 200 (OK)
-        res.status(200).json({ status: 'ok', message: 'API and DB are running' });
-    } catch (error) {
-        // Se falhou, responde com status 503 (Serviço Indisponível)
-        console.error('Health check failed:', error);
-        res.status(503).json({ status: 'error', message: 'Cannot connect to the database' });
-    }
-});
 
 // GET: List all users
 app.get('/api/users', async (req, res) => {

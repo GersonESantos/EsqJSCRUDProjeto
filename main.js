@@ -1,5 +1,5 @@
-import { gsap } from 'gsap';
 
+import { gsap } from 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
 const API_URL = 'http://localhost:3000/api/users';
 
 // State
