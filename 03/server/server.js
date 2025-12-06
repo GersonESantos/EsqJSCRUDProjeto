@@ -39,13 +39,13 @@ app.post('/api/usuarios', async (req, res) => {
     const { nome, email, fone, data_nascimento } = req.body;
     try {
         const [result] = await db.query(
-            'INSERT INTO usuarios (nome, email, telefone, data_nasc) VALUES (?, ?, ?, ?)',
+            'INSERT INTO usuarios (nome, email, fone, data_nascimento) VALUES (?, ?, ?, ?)',
             [nome, email, fone, data_nascimento]
         );
         res.status(201).json({ id: result.insertId, message: 'Usuário criado com sucesso' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao criar usuário', details: error.message });
+        res.status(500).json({ error: 'Erro ao criar usuário' });
     }
 });
 
@@ -54,7 +54,7 @@ app.put('/api/usuarios/:id', async (req, res) => {
     const { nome, email, fone, data_nascimento } = req.body;
     try {
         const [result] = await db.query(
-            'UPDATE usuarios SET nome = ?, email = ?, telefone = ?, data_nasc = ? WHERE id = ?',
+            'UPDATE usuarios SET nome = ?, email = ?, fone = ?, data_nascimento = ? WHERE id = ?',
             [nome, email, fone, data_nascimento, req.params.id]
         );
         if (result.affectedRows === 0) return res.status(404).json({ error: 'Usuário não encontrado' });

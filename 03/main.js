@@ -34,8 +34,8 @@ function renderUsers(users) {
         tr.innerHTML = `
             <td>${user.nome}</td>
             <td>${user.email}</td>
-            <td>${user.telefone}</td>
-            <td>${formatDate(user.data_nasc)}</td>
+            <td>${user.fone}</td>
+            <td>${formatDate(user.data_nascimento)}</td>
             <td>
                 <button class="btn btn-edit" data-id="${user.id}">Editar</button>
                 <button class="btn btn-danger" data-id="${user.id}">Excluir</button>
@@ -50,33 +50,20 @@ function renderUsers(users) {
         );
     });
 
-    // Add event listeners for buttons using closure for reliability
+    // Add event listeners for buttons
     document.querySelectorAll('.btn-edit').forEach(btn => {
-        btn.addEventListener('click', () => loadUserForEdit(btn.dataset.id));
+        btn.addEventListener('click', (e) => loadUserForEdit(e.target.dataset.id));
     });
 
     document.querySelectorAll('.btn-danger').forEach(btn => {
-        btn.addEventListener('click', () => deleteUser(btn.dataset.id));
+        btn.addEventListener('click', (e) => deleteUser(e.target.dataset.id));
     });
 }
 
-    // Add listener for New User button
-    const btnNewUser = document.getElementById('btnNewUser');
-    if (btnNewUser) {
-        btnNewUser.addEventListener('click', () => {
-            resetForm();
-            gsap.fromTo("#form-card", { scale: 1 }, { scale: 1.01, duration: 0.1, yoyo: true, repeat: 1 });
-        });
-    }
-
 function formatDate(dateString) {
     if (!dateString) return '';
-    // Create date focusing on UTC parts to avoid timezone shifting
     const date = new Date(dateString);
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const year = date.getUTCFullYear();
-    return `${day}/${month}/${year}`;
+    return date.toLocaleDateString('pt-BR');
 }
 
 userForm.addEventListener('submit', async (e) => {
@@ -92,7 +79,7 @@ userForm.addEventListener('submit', async (e) => {
 
     try {
         let response;
-        if (id && id !== 'undefined') {
+        if (id) {
             // Update
             response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
@@ -114,54 +101,30 @@ userForm.addEventListener('submit', async (e) => {
             
             // Success Animation on Form
             gsap.fromTo("#form-card", 
-                { scale: 1, borderColor: "rgba(255, 255, 255, 0.1)" }, 
-                { scale: 1.02, borderColor: "var(--success-color)", duration: 0.2, yoyo: true, repeat: 1 }
+                { scale: 1 }, 
+                { scale: 1.02, duration: 0.1, yoyo: true, repeat: 1 }
             );
         } else {
-            const errorData = await response.json();
-            alert(`Erro ao salvar: ${errorData.error || 'Erro desconhecido'}`);
+            alert('Erro ao salvar usuário');
         }
     } catch (error) {
         console.error('Error saving user:', error);
-        alert('Erro de conexão ao salvar usuário.');
     }
 });
 
 async function loadUserForEdit(id) {
-    if (!id || id === 'undefined') {
-        console.error('Invalid ID passed to loadUserForEdit');
-        return;
-    }
-
     try {
         const response = await fetch(`${API_URL}/${id}`);
-        if (!response.ok) throw new Error('Falha ao buscar usuário');
         const user = await response.json();
         
         userIdInput.value = user.id;
         document.getElementById('nome').value = user.nome;
         document.getElementById('email').value = user.email;
-        // DB column 'telefone' -> Form input 'fone'
-        document.getElementById('fone').value = user.telefone || '';
-        
-        // Robust Date Handling for Input (YYYY-MM-DD)
-        // DB column 'data_nasc'
-        if (user.data_nasc) {
-            const date = new Date(user.data_nasc);
-            const year = date.getUTCFullYear();
-            const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(date.getUTCDate()).padStart(2, '0');
-            document.getElementById('data_nascimento').value = `${year}-${month}-${day}`;
-        } else {
-            document.getElementById('data_nascimento').value = '';
-        }
+        document.getElementById('fone').value = user.fone;
+        // Format date for input type="date" (YYYY-MM-DD)
+        document.getElementById('data_nascimento').value = user.data_nascimento.split('T')[0];
         
         submitBtn.querySelector('span').textContent = 'Atualizar Usuário';
-        submitBtn.classList.remove('btn-primary');
-        submitBtn.classList.add('btn-edit');
-        submitBtn.style.width = '100%'; 
-        submitBtn.style.background = 'var(--accent-color)';
-        submitBtn.style.color = 'white';
         
         // Scroll to form
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -199,10 +162,4 @@ function resetForm() {
     userForm.reset();
     userIdInput.value = '';
     submitBtn.querySelector('span').textContent = 'Salvar Usuário';
-    
-    // Reset styling if it was in edit mode
-    submitBtn.classList.remove('btn-edit');
-    submitBtn.classList.add('btn-primary');
-    submitBtn.style.background = ''; 
-    submitBtn.style.color = '';
 }
